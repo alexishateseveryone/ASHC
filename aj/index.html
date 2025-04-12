@@ -1,0 +1,388 @@
+
+<?php
+session_start();
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASHC</title>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <script src="assets/js/bootstrap.bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <style>
+
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 120vh;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            
+        
+        }
+
+        body.fade-in {
+      opacity: 1;
+        }
+    .fade-out {
+      opacity: 0 !important;
+    }
+        
+
+        
+            
+        .login-container {
+        background: rgb(255, 255, 255);
+        padding: 40px;
+        border-radius: 25px;
+        box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
+        width: 400px;
+        height: 500px; /* Set a fixed height */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+    }
+        
+        .logo {
+            width: 60px;
+            margin: 30px;
+            
+        }
+        input {
+            width: 250px;
+            padding: 10px 15px;
+            margin: 3px 0;
+            background-color: rgb(245, 245, 245);
+            border: 0px solid gray;
+            border-radius: 25px;
+            display: block;
+
+        }
+        button {
+            width: calc(65% - 150px);
+            padding: 10px;
+            margin: 2px 0;
+            background: rgb(77, 192, 77);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+
+            
+        }
+        .fade-bg-green {
+        background-color: #21a13d;
+        color: white;
+        transition: background-color 0.5s ease-in-out;
+        width: 123px;
+        height: 50px;
+        border-radius: 25px;
+    
+            }
+                .fade-bg-green:hover {
+                background-color: #bfd63f;
+                color: white;
+
+            }
+            .fade-bg-grey {
+
+            color: rgb(90, 90, 90);
+            border: 1px solid grey;
+            transition: background-color 0.5s ease-in-out;
+            width: 123px;
+            height: 50px;
+            border-radius: 25px;
+    
+            }
+                .fade-bg-grey:hover {
+                background-color: #26ce42;
+                color: white;
+                }
+                .fade-bg-grey1 {
+
+                color: rgb(90, 90, 90);
+                border: 1px solid grey;
+                transition: background-color 0.5s ease-in-out;
+                width: 250px;
+                height: 50px;
+                border-radius: 25px;
+
+                    }
+                        .fade-bg-grey1:hover {
+                        background-color: #0e107a;
+                        color: white;
+                        }
+            .fade-bg-grey2 {
+
+            color: rgb(90, 90, 90);
+            border: 1px solid grey;
+            transition: background-color 0.5s ease-in-out;
+            width: 250px;
+            height: 50px;
+            border-radius: 25px;
+
+                        }
+                            .fade-bg-grey2:hover {
+                            background-color: #b68043;
+                            color: white;
+                            }
+
+    .password-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+    .toggle-icon {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      cursor: pointer;
+    }
+
+     
+
+
+        #message {
+            font-size: 14px;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: white;
+        }
+
+        .modal-body-center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+
+}
+        
+
+
+       
+
+       
+    </style>
+</head>
+<body>
+  
+<!-- LOGIN CONTAINER -->
+        <img class="logo" src="logo.png" alt="">
+        <div class="login-container">
+            
+      
+            <h2 class="fs-3 fw-bold">Login to ASHC</h2>
+            <P>Asiatech HealthCare</P>
+            <input type="email" id="email" placeholder="Email" required>
+            
+  <div class="password-wrapper">
+    <input type="password" id="password" placeholder="Password">
+    <i class="bi bi-eye-slash toggle-icon" onclick="togglePassword()" id="toggleIcon"></i>
+  </div>
+             
+                <div style="display: flex;gap: 10px;margin: 5px;">
+                    <button class="btn fade-bg-green" onclick="login()">Login</button>
+                    <button class="btn fade-bg-grey"data-bs-toggle="modal" data-bs-target="#myModal">Sign Up</button>
+                </div>  
+                <p>or</p>
+                <button class="btn fade-bg-grey1" onclick="wompwomp()">Sign Up with Facebook</button>
+                <button class="btn fade-bg-grey2" onclick="wompwomp1()">Sign Up with Google</button>
+    
+    </div>
+ 
+        
+
+    
+
+<!-- CREATE ACCOUNT MODAL -->
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Sign up</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="send_otp.php">
+                <div class="modal-body modal-body-center">
+                    <input type="text" id="newUsername" placeholder="Username" required>
+                    <input type="email" id="newEmail" placeholder="Email (must be @gmail.com)" required>
+                    <input type="password" id="newPassword" placeholder="Password" required>
+                    
+                </div>
+            </form>
+            
+            <div class="modal-footer modal-body-center">
+                <button type="button" class="btn fade-bg-green" onclick="otpAccount()" class ="fade-link">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+    
+    
+    
+
+
+    
+ 
+            
+   
+
+    <script>
+        // Open Create Account modal
+        function openCreateAccount() {
+            document.getElementById("createAccountModal").style.display = "block";
+        }
+
+        // OTP Confirm
+        function otpAccount() {
+            window.location.href = "verify_otp.html"; // Redirect on success
+        }
+
+        // Close Create Account modal
+        function closeCreateAccount() {
+            document.getElementById("createAccountModal").style.display = "none";
+        }
+ 
+
+        function showFillAlert() {
+        document.getElementById('FillAlert').classList.remove('d-none');
+        
+    }
+        function wompwomp(){
+            alert("Facebook Sign Up currently not available");
+        }
+        function wompwomp1(){
+            alert("Google Sign Up currently not available");
+        }
+
+        function togglePassword() {
+      const passwordInput = document.getElementById("password");
+      const icon = document.getElementById("toggleIcon");
+
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        icon.classList.remove("bi-eye-slash");
+        icon.classList.add("bi-eye");
+      } else {
+        passwordInput.type = "password";
+        icon.classList.remove("bi-eye");
+        icon.classList.add("bi-eye-slash");
+      }
+    }
+
+    // Fade in on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      document.body.classList.add('fade-in');
+    });
+
+    // Fade out on link click
+    const links = document.querySelectorAll('.fade-link');
+    links.forEach(link => {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.body.classList.remove('fade-in');
+        document.body.classList.add('fade-out');
+
+        setTimeout(() => {
+          window.location.href = this.href;
+        }, 500); // match the CSS duration
+      });
+    });
+
+    
+ 
+
+function login() {
+    let email = document.getElementById("email").value; // Updated from "username" to "email"
+    let password = document.getElementById("password").value;
+
+    if (!email || !password) {
+        alert("Please enter both email and password.");
+        return;
+    }
+
+    let hashedPassword = CryptoJS.SHA256(password).toString();
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "login.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    xhr.onload = function() {
+        let response = xhr.responseText.trim();
+        console.log("Server Response:", response);
+
+        if (xhr.status === 200) {
+            alert(response);
+            if (response === "Login successful!") {
+                setTimeout(() => {
+                    window.location.href = "dashboard.php"; // Redirect on success
+                }, 1000);
+            }S
+        } else {
+            
+
+        }
+    };
+
+    xhr.onerror = function() {
+        alert("Error connecting to server.");
+    };
+
+    xhr.send(`email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}&hashedPassword=${encodeURIComponent(hashedPassword)}`);
+}
+
+ // Create Account function
+        function createAccount() {
+            // Get the input values
+            let username = document.getElementById("newUsername").value;
+            let email = document.getElementById("newEmail").value;
+            let password = document.getElementById("newPassword").value;
+            let message = document.getElementById("message");
+
+            // Validation check
+            if (!username || !email || !password) {
+                alert("Please fill in all fields.");
+        return;
+            }
+
+            // Create an AJAX request to send data to register.php
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "register.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    alert(xhr.responseText); // Show response in a popup
+                    message.className = "success";  // Display success message
+
+                    // Reset the form after successful account creation
+                    if (xhr.responseText === "Account created successfully!") {
+                        document.getElementById("newUsername").value = '';
+                        document.getElementById("newEmail").value = '';
+                        document.getElementById("newPassword").value = '';
+                    }
+                } else {
+                    message.textContent = "There was an issue creating the account.";
+                    message.className = "error";
+                }
+            };
+            // Send data to register.php
+            xhr.send(`username=${username}&email=${email}&password=${password}`);
+        }
+    </script>
+</body>
+</html>
